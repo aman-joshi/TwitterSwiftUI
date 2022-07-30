@@ -11,6 +11,7 @@ struct ProfileView: View {
     
     @State private var selectedFilter:TweetFilterViewModel = .tweets
     @Namespace var animation
+    @Environment(\.presentationMode) var mode
     
     var body: some View {
         VStack(alignment:.leading) {
@@ -43,7 +44,7 @@ extension ProfileView {
             VStack {
                 
                 Button {
-                    //
+                    mode.wrappedValue.dismiss()
                 } label: {
                     Image(systemName: "arrow.left")
                         .resizable()
@@ -115,26 +116,8 @@ extension ProfileView {
             .font(.caption)
             .foregroundColor(Color.gray)
             
-            HStack(spacing:24){
-                HStack(spacing:4) {
-                    Text("804")
-                        .foregroundColor(.black)
-                        .font(.subheadline).bold()
-                    Text("Following")
-                }
-                
-                HStack(spacing:4) {
-                    Text("3.8M")
-                        .foregroundColor(.black)
-                        .font(.subheadline).bold()
-                    Text("Followers")
-                }
-            }
+            UserStatsView()
             .padding(.vertical)
-            .font(.caption)
-            .foregroundColor(Color.gray)
-            
-            
         }.padding(.horizontal)
     }
     
