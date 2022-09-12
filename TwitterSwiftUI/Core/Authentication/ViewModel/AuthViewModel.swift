@@ -11,6 +11,8 @@ import SwiftUI
 
 class AuthViewModel:ObservableObject {
     @Published var userSession:FirebaseAuth.User?
+    @Published var didAuthenticateUser:Bool = false
+    private var tempUserSession:FirebaseAuth.User?
     
     init() {
         self.userSession = Auth.auth().currentUser
@@ -36,14 +38,14 @@ class AuthViewModel:ObservableObject {
                 return
             }
             guard let user = result?.user else { return }
-            self.userSession = user
-            
+            self.tempUserSession = user
             let data = ["email":email,"username":username.lowercased(),"fullname":fullname,"uid":user.uid]
             
             Firestore.firestore().collection("users")
                 .document(user.uid)
                 .setData(data, completion: { _ in
                     print("Did upload user info")
+                    self.didAuthenticateUser = true
                 })
         }
     }
@@ -51,6 +53,17 @@ class AuthViewModel:ObservableObject {
     func signout() {
         userSession = nil
         try? Auth.auth().signOut()
+    }
+    
+    func uploadProfileImage(image:UIImage) {
+        guard let uid = tempUserSession?.uid else { return }
+        ImageUploader.uploadImage(image: image) { profileImageUrl in
+            Firestore.firestore().collection("users")
+                .document(uid)
+                .updateData(["profileImageUrl":profileImageUrl]) { [weak self] _ in
+                    self?.userSession = self?.tempUserSession
+                }
+        }
     }
 }
 
