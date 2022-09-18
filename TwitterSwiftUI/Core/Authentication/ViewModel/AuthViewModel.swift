@@ -12,10 +12,13 @@ import SwiftUI
 class AuthViewModel:ObservableObject {
     @Published var userSession:FirebaseAuth.User?
     @Published var didAuthenticateUser:Bool = false
+    @Published var currentUser:User?
     private var tempUserSession:FirebaseAuth.User?
+    private var service = UserService()
     
     init() {
         self.userSession = Auth.auth().currentUser
+        self.fetchUser()
     }
     
     func login(withEmail email:String, password:String) {
@@ -27,6 +30,7 @@ class AuthViewModel:ObservableObject {
             }
             guard let user = result?.user else { return }
             self.userSession = user
+            self.fetchUser()
         }
     }
     
@@ -45,7 +49,7 @@ class AuthViewModel:ObservableObject {
                 .document(user.uid)
                 .setData(data, completion: { _ in
                     print("Did upload user info")
-                    self.didAuthenticateUser = true
+                    //self.didAuthenticateUser = true
                 })
         }
     }
@@ -61,8 +65,17 @@ class AuthViewModel:ObservableObject {
             Firestore.firestore().collection("users")
                 .document(uid)
                 .updateData(["profileImageUrl":profileImageUrl]) { [weak self] _ in
+                    print("DEBUG:successfully upload image")
                     self?.userSession = self?.tempUserSession
+                    self?.fetchUser()
                 }
+        }
+    }
+    
+    func fetchUser() {
+        guard let uid = self.userSession?.uid else { return }
+        service.fetchUser(withUid: uid) { user in
+            self.currentUser = user
         }
     }
 }
