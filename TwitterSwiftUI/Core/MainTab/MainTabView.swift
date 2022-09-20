@@ -21,19 +21,19 @@ struct MainTabView: View {
                 }.tag(0)
             ExploreView()
                 .onTapGesture {
-                    selectedIndex = 0
+                    selectedIndex = 1
                 }.tabItem {
                     Image(systemName: "magnifyingglass")
                 }.tag(1)
             NotificationsView()
                 .onTapGesture {
-                    selectedIndex = 0
+                    selectedIndex = 2
                 }.tabItem {
                     Image(systemName: "bell")
                 }.tag(2)
             MessagesView()
                 .onTapGesture {
-                    selectedIndex = 0
+                    selectedIndex = 3
                 }.tabItem {
                     Image(systemName: "envelope")
                 }.tag(3)

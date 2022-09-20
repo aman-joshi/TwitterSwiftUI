@@ -22,7 +22,7 @@ struct TextArea: View {
             
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(Color(.placeholderText))
+                    .foregroundColor(Color(.black))
                     .padding(.horizontal,8)
                     .padding(.vertical,12)
             }
