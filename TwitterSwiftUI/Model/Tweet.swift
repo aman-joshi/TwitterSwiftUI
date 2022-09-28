@@ -16,4 +16,5 @@ struct Tweet:Identifiable,Decodable {
     let uid:String
     
     var user:User?
+    var didLike:Bool? = false
 }
