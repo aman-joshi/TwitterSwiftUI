@@ -25,18 +25,6 @@ struct MainTabView: View {
                 }.tabItem {
                     Image(systemName: "magnifyingglass")
                 }.tag(1)
-            NotificationsView()
-                .onTapGesture {
-                    selectedIndex = 2
-                }.tabItem {
-                    Image(systemName: "bell")
-                }.tag(2)
-            MessagesView()
-                .onTapGesture {
-                    selectedIndex = 3
-                }.tabItem {
-                    Image(systemName: "envelope")
-                }.tag(3)
         }
     }
 }

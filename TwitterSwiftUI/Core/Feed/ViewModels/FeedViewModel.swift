@@ -15,6 +15,10 @@ class FeedViewModel:ObservableObject {
     
     @Published private(set) var tweets = [Tweet]()
     
+    init() {
+        self.fetchTweets()
+    }
+    
     func fetchTweets() {
         service.fetchTweets(completion: { tweets in
             self.tweets = tweets

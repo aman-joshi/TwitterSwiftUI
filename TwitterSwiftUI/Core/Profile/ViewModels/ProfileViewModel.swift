@@ -12,13 +12,20 @@ class ProfileViewModel:ObservableObject {
     @Published var tweets:[Tweet] = []
     @Published var likedTweets:[Tweet] = []
     
+    
     private let service = TweetService()
+    private let userService = UserService()
+
     let user:User
     
     init(user:User) {
         self.user = user
         fetchUserTweets()
         fetchLikedTweets()
+    }
+    
+    var actionButtonTitle:String {
+        self.user.isCurrentUser ? "Edit Profile" : "Follow"
     }
     
     func tweets(forFilter filter:TweetFilterViewModel) -> [Tweet] {
@@ -48,7 +55,12 @@ class ProfileViewModel:ObservableObject {
         
         service.fetchLikedTweets(forUid: uid) { tweets in
             self.likedTweets = tweets
+            
+            for index in 0..<tweets.count {
+                self.userService.fetchUser(withUid: tweets[index].uid) { user in
+                    self.likedTweets[index].user = user
+                }
+            }
         }
     }
-    
 }

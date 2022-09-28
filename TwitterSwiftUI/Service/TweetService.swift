@@ -106,12 +106,10 @@ extension TweetService {
     }
     
     func fetchLikedTweets(forUid uid:String,completion:@escaping ([Tweet]) -> Void) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
         var tweets:[Tweet] = []
-        Firestore.firestore().collection(FirebaseConstants.Collection.users)
-            .document(uid)
+        Firestore.firestore().collection(FirebaseConstants.Collection.users).document(uid)
             .collection(FirebaseConstants.Collection.userLikes)
-            .getDocuments { snapshot, _ in
+            .getDocuments { snapshot, error in
                 guard let documents = snapshot?.documents else { return }
                 
                 documents.forEach { doc in
@@ -119,11 +117,11 @@ extension TweetService {
                     
                     Firestore.firestore().collection(FirebaseConstants.Collection.tweets)
                         .document(tweetID).getDocument { snapshot, _ in
-                            guard let tweet = try?.snapshot?.data(as: Tweet.self) else { return }
+                            guard let tweet = try? snapshot?.data(as: Tweet.self) else { return }
                             tweets.append(tweet)
+                            completion(tweets)
                         }
                 }
-                completion(tweets)
             }
     }
 }
